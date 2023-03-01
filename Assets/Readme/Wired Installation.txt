@@ -1,0 +1,27 @@
+-------- FOR ARTIFICIAL INTELLIGENCE --------
+install visual studio 2022 via website
+install the cuda12 from nvidia installer
+
+conda create -n sign_app python==3.10.0
+
+conda activate sign_app
+
+conda install -c conda-forge cudatoolkit=11.2 cudnn=8.1.0
+
+# Anything above 2.10 is not supported on the GPU on Windows Native
+python -m pip install "tensorflow<2.11"
+
+# Verify install:
+python -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
+
+pip install mediapipe==0.9.0.1
+pip install opencv_python-4.7.0.68
+
+-------- FOR PROGRAMS --------
+
+pip install playsound==1.2.2
+pip install SpeechRecognition==3.9.0
+pip install googletrans==3.1.0a0
+pip install gTTS==2.3.1
+pip install pyaudio==0.2.13
+pip install pygrabber==0.1
