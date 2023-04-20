@@ -50,7 +50,7 @@ class DisabledAPP(tk.Tk) :
         style.configure("SelectedDevice.TLabel", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
         style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
 
-        self.title("İşaret Dili Tanımlayıcı")
+        self.title("Herkes İçin İşaret Dili")
 
         self.iconbitmap(OTHER_CLUB_ICO_ICO)
 
@@ -110,8 +110,8 @@ class DisabledAPP(tk.Tk) :
 
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        self.background_label.config(image=self.background_image)
+        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
+        # self.background_label.config(image=self.background_image)
 
         self.update()
         self.update_idletasks()

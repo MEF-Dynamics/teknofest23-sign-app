@@ -12,7 +12,8 @@ from Constants import (
     OTHER_CLUB_ICO_ICO,
     ANIM_ANIMATIONS,
     ANIM_DEFAULT,
-    ANIM_DEFAULT_LISTENING
+    ANIM_DEFAULT_LISTENING,
+    ANIM_teknofest,
 )
 
 from Utilities import (
@@ -58,7 +59,7 @@ class NormalAPP(tk.Tk) :
         style.configure("SelectedDevice.TLabel", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
         style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
 
-        self.title("İşaret Dili Tanımlayıcı")
+        self.title("Herkes İçin İşaret Dili")
 
         self.iconbitmap(OTHER_CLUB_ICO_ICO)
 
@@ -76,8 +77,9 @@ class NormalAPP(tk.Tk) :
         self.background_label = ttk.Label(self.container)
         self.background_label.place(x=0, y=0)
 
-        self.default_animation_image = ImageTk.PhotoImage(Image.open(ANIM_DEFAULT).resize((500, 500), Image.LANCZOS))
-        self.default_listening_image = ImageTk.PhotoImage(Image.open(ANIM_DEFAULT_LISTENING).resize((500, 500), Image.LANCZOS))
+        self.default_animation_image = ImageTk.PhotoImage(Image.open(ANIM_teknofest).resize((500, 500), Image.LANCZOS))
+            
+        self.default_listening_image = ImageTk.PhotoImage(Image.open(ANIM_teknofest).resize((500, 500), Image.LANCZOS))
 
         dummy_label = ttk.Label(self.container, text="")
         dummy_label.grid(row=0, column=0, pady=20)
@@ -113,8 +115,8 @@ class NormalAPP(tk.Tk) :
 
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        self.background_label.config(image=self.background_image)
+        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
+        # self.background_label.config(image=self.background_image)
 
         self.update()
         self.update_idletasks()

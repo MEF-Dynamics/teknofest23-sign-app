@@ -30,6 +30,7 @@ ANIM_FOLDER_PATH = connect_pathes(RUN_ASSETS_FOLDER_PATH, "Animations")
 ANIM_ANIMATIONS = {file.split("\\")[-1].split(".")[0][len("ANIM_"):]: file for file in [connect_pathes(ANIM_FOLDER_PATH, file) for file in listdir(ANIM_FOLDER_PATH)]}
 ANIM_DEFAULT = connect_pathes(ANIM_FOLDER_PATH, "ANIM_Default.gif")
 ANIM_DEFAULT_LISTENING = connect_pathes(ANIM_FOLDER_PATH, "ANIM_Default_Listening.gif")
+ANIM_teknofest = connect_pathes(ANIM_FOLDER_PATH, "ANIM_teknofest.gif")
 
 PROGRAM_STRUCTURE_CHECK_LIST = [
     RUN_ASSETS_FOLDER_PATH,

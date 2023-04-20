@@ -51,7 +51,7 @@ class Application(tk.Tk) :
 
         style.configure("StartButton.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="#00b300", borderwidth=0, cursor="hand2", relief="flat")
 
-        self.title("İşaret Dili Tanımlayıcı")
+        self.title("Herkes İçin İşaret Dili")
 
         self.iconbitmap(OTHER_CLUB_ICO_ICO)
 
@@ -73,13 +73,14 @@ class Application(tk.Tk) :
         self.club_logo_label.grid(row=1, column=0)
 
         self.info_text = [
-            "Merhaba hoşgeldiniz !",
-            "Bu uygulamadaki motivasyonumuz aşağıdaki gibidir",
-            "İşaret Dilinin : Yaygınlaşmasını sağlayabilmek",
-            "İşaret Dilinin : Farkındalığını yaratabilmek",
-            "İşaret Dilinin : Kullanımını kolaylaştırmak",
-            "İşaret Dilinin : Öğretimini verimlendirmek",
-            "MEF Dynamics - Engelsiz Yaşam - ekibi sunar"
+            "Merhaba Hoş Geldiniz !",
+            "Bu uygulamadaki motivasyonumuz aşağıdaki gibidir:",
+            "İşaret Dilininin: ",
+            "-Yaygınlaşmasını sağlamak",
+            "-Farkındalığını artırmak",
+            "-Kullanımını kolaylaştırmak",
+            "-Öğretiminde verimi artırmak",
+            "MEF Dynamics - Engelsiz Yaşam ekibi sunar",
         ]
         
         self.info_text = "\n\n".join(self.info_text)
@@ -97,8 +98,8 @@ class Application(tk.Tk) :
         
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        self.background_label.config(image=self.background_image)
+        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
+        # self.background_label.config(image=self.background_image)
 
         self.rotateApplicationWindow()
 
