@@ -25,7 +25,7 @@ from Utilities import (
 
 class Application(tk.Tk) :
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, debug=False, *args, **kwargs) -> None:
         """
         Constructor method. Creates the main window of the application.
         @Params:
@@ -36,6 +36,10 @@ class Application(tk.Tk) :
             None
         """
         super().__init__(*args, **kwargs)
+
+        self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH)
+        self.available_cameras = get_available_cameras()
+        self.available_michrophones = get_available_michrophones()
 
         try:
             from ctypes import windll
@@ -50,6 +54,8 @@ class Application(tk.Tk) :
         self.configure(background=style.lookup("TFrame", "background"))
 
         style.configure("StartButton.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="#00b300", borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("StartButton2.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="red", borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("StartButton3.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="blue", borderwidth=0, cursor="hand2", relief="flat")
 
         self.title("Herkes İçin İşaret Dili")
 
@@ -87,7 +93,7 @@ class Application(tk.Tk) :
         self.info_label = ttk.Label(self.container, text=self.info_text, justify="center", cursor="star", font=("Seoge UI", 14, "bold"))
         self.info_label.grid(row=2, column=0, padx=40, pady=40)
 
-        self.input_button = ttk.Button(self.container, text="Uygulamayı Başlat", command=self.handle_start_application, style="StartButton.TButton", cursor="hand2")
+        self.input_button = ttk.Button(self.container, text="Uygulamaları Başlat", command=self.start_applications, style="StartButton.TButton", cursor="hand2")
         self.input_button.grid(row=3, column=0)
 
         dummy_label = ttk.Label(self.container, text="")
@@ -105,26 +111,41 @@ class Application(tk.Tk) :
 
         self.update()
         self.update_idletasks()
+
+        if debug:
+            self.debug_on()
         
-    def handle_start_application(self, *args, **kwargs) -> None:
+    def close(self) -> None:
         """
-        Class Method, that handles the start application button.
+        Class Method, that closes the application.
         @Params:
-            *args (tuple): (Optimal) Arguments.
-            **kwargs (dict): (Optimal) Keyword arguments.
+            None
         @Returns:
             None
         """
-        self.input_button.config(state="disabled", cursor="arrow")
+        try :
+            self.close_applications()
+        except :
+            pass
+        self.destroy()
+        self.quit()
 
-        self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH)
+    def debug_on(self) -> None:
+        """
+        Class Method, that debugs the applications.
+        @Params:
+            None
+        @Returns:
+            None
+        """
+        self.input_button.config(text="DEBUG MODE", cursor="hand2", style="StartButton3.TButton")
+        self.input_button.config(command=self.close_applications)
 
-        self.available_cameras = get_available_cameras()
-        self.available_michrophones = get_available_michrophones()
+        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model, {True, "ECMECM", "mkv_mp4", "@544566454"})
+        self.normal_app = NormalAPP(self.available_michrophones, {True, "ECMECM", "aw_mp3", "@544566454"})
 
-        self.is_initialization_done = True
-
-        self.start_applications()
+        self.normal_app.mainloop()
+        self.disabled_app.mainloop()
 
     def start_applications(self) -> None:
         """
@@ -134,13 +155,33 @@ class Application(tk.Tk) :
         @Returns:
             None
         """
-        self.destroy()
 
-        disabled_app = DisabledAPP(self.available_cameras, self.detector_model)
-        disabled_app.mainloop()
+        self.input_button.config(text="Uygulamaları Kapat", cursor="hand2", style="StartButton2.TButton")
+        self.input_button.config(command=self.close_applications)
 
-        normal_app = NormalAPP(self.available_michrophones)
-        normal_app.mainloop()
+        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model)
+        self.normal_app = NormalAPP(self.available_michrophones)
+
+        self.normal_app.mainloop()
+        self.disabled_app.mainloop()
+
+    def close_applications(self) -> None:
+        """
+        Class Method, that closes the applications.
+        @Params:
+            None
+        @Returns:
+            None
+        """
+        self.input_button.config(text="Uygulamaları Başlat", cursor="hand2", style="StartButton.TButton")
+        self.input_button.config(command=self.start_applications)
+
+        try :
+            self.normal_app.close()
+            self.disabled_app.close()
+        except :
+            pass
+
 
     def rotateApplicationWindow(self) -> None:
         """

@@ -13,6 +13,8 @@ from Constants import (
     GUI_CAMERA_B_PNG,
     GUI_CAMERA_R_PNG,
     OTHER_CLUB_ICO_ICO,
+    OTHER_TURKISH_LANGUAGE,
+    OTHER_ENGLISH_LANGUAGE,
 )
 
 from Utilities import (
@@ -20,9 +22,9 @@ from Utilities import (
     vocalize_text,
 )
 
-class DisabledAPP(tk.Tk) :
+class DisabledAPP(tk.Toplevel) :
 
-    def __init__(self, available_devices:list, model, *args, **kwargs) :
+    def __init__(self, available_devices:list, model, my_Args=None, *args, **kwargs) :
         """
         Constructor method. Creates the main window of the application.
         @Params:
@@ -47,8 +49,8 @@ class DisabledAPP(tk.Tk) :
         self.configure(background=style.lookup("TFrame", "background"))
 
         style.configure("Output.TLabel", font=("Seoge UI", 14, "bold"), borderwidth=0, cursor="hand2", relief="flat")
-        style.configure("SelectedDevice.TLabel", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
-        style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("SelectedDevice.TLabel", font=("Seoge UI", 13, "bold"), borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 13, "bold"), borderwidth=0, cursor="hand2", relief="flat")
 
         self.title("Herkes İçin İşaret Dili")
 
@@ -100,10 +102,32 @@ class DisabledAPP(tk.Tk) :
         self.device_selection_combobox = ttk.Combobox(self.container, values=list(self.available_devices.values()), textvariable=self.current_device_name, state="readonly", justify="center", cursor="hand2", width=50, style="SeelctionCombobox.TCombobox")
         self.device_selection_combobox.grid(row=6, column=0)
 
-        self.device_selection_combobox.bind("<<ComboboxSelected>>", self.handle_device_selection)
+        dummy_label = ttk.Label(self.container, text="")
+        dummy_label.grid(row=7, column=0, pady=5)
 
-        dummy_label3 = ttk.Label(self.container, text="")
-        dummy_label3.grid(row=7, column=0, pady=20)
+        self.available_languages = ["Türkçe", "English"]
+        self.current_language = "Türkçe"
+
+        self.language_selection_label = ttk.Label(self.container, text="Dil Seçimi", justify="center", cursor="star", style="SelectedDevice.TLabel")
+        self.language_selection_label.grid(row=8, column=0)
+
+        self.turkish_flag_image = ImageTk.PhotoImage(Image.open(OTHER_TURKISH_LANGUAGE).resize((50, 50), Image.LANCZOS))
+        self.english_flag_image = ImageTk.PhotoImage(Image.open(OTHER_ENGLISH_LANGUAGE).resize((50, 50), Image.LANCZOS))
+
+        fframe = ttk.Frame(self.container)
+        fframe.grid(row=9, column=0)
+        fframe.columnconfigure((0,1), weight=1)
+
+        self.turkish_flag_button = ttk.Button(fframe, command=lambda: self.handle_language_selection("Türkçe"), cursor="hand2", image=self.turkish_flag_image, state="disabled")
+        self.turkish_flag_button.grid(row=0, column=0)
+
+        self.english_flag_button = ttk.Button(fframe, command=lambda: self.handle_language_selection("English"), cursor="hand2", image=self.english_flag_image)
+        self.english_flag_button.grid(row=0, column=1)
+
+        dummy_label = ttk.Label(self.container, text="")
+        dummy_label.grid(row=11, column=0, pady=20)
+
+        self.device_selection_combobox.bind("<<ComboboxSelected>>", self.handle_device_selection)
 
         self.update()
         self.update_idletasks()
@@ -115,6 +139,54 @@ class DisabledAPP(tk.Tk) :
 
         self.update()
         self.update_idletasks()
+
+    def close(self) -> None:
+        """
+        Class Method, that closes the application
+        @Params
+            None
+        @Returns
+            None
+        """
+        self.cap.release()
+        self.destroy()
+
+    def handle_language_selection(self, language: str) -> None:
+        """
+        Class Method to handle language selection.
+        @Params
+            language : (str) Language to be selected.
+        @Returns
+            None
+        """
+
+        if language == "Türkçe" :
+            self.current_language = "Türkçe"
+            self.turkish_flag_button.config(state="disabled")
+            self.english_flag_button.config(state="enabled")
+            self.title("Herkes İçin İşaret Dili")
+            
+            current_output = self.output_text.get()
+            new_output = translate_text(source_language="en", target_language="tr", text=current_output)
+            self.output_text.set(new_output)
+
+            self.device_selection_label.config(text="Mikfrofon Seçimi")
+
+            self.language_selection_label.config(text="Dil Seçimi")
+
+        else :
+            self.current_language = "English"
+            self.turkish_flag_button.config(state="enabled")
+            self.english_flag_button.config(state="disabled")
+            self.title("Sign Language For Everyone")
+
+            current_output = self.output_text.get()
+            new_output = translate_text(source_language="tr", target_language="en", text=current_output)
+            self.output_text.set(new_output)
+
+            self.device_selection_label.config(text="Microphone Selection")
+
+            self.language_selection_label.config(text="Language Selection")
 
     def reset_model_variables(self) -> None:
         """
@@ -167,17 +239,23 @@ class DisabledAPP(tk.Tk) :
             self.cap.release()
             cv2.destroyAllWindows()
 
-            turkish_sentence = translate_text("en", "tr", " ".join(self.sentence))
+            processed = " ".join(self.sentence)
+            if self.current_language == "Türkçe" :
+                processed = translate_text("en", "tr", processed)
+                args = ("tr", processed)
+            else :
+                args = ("en", processed)
 
-            if len(turkish_sentence) > 40 :
-                turkish_sentence = turkish_sentence[:40] + "..."
+            output = processed
+            if len(output) > 40 :
+                output = output[:40] + "..."
 
-            self.output_text.set(turkish_sentence)
+            self.output_text.set(output)
 
             self.update()
             self.update_idletasks()
 
-            vocalizer_thread = threading.Thread(target=vocalize_text, args=("tr", turkish_sentence))
+            vocalizer_thread = threading.Thread(target=vocalize_text, args=args)
             vocalizer_thread.start()
 
             self.capture_button_photo = ImageTk.PhotoImage(Image.open(GUI_CAMERA_B_PNG).resize((100, 100), Image.LANCZOS))
