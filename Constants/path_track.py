@@ -25,6 +25,8 @@ OTHER_FOLDER_PATH = connect_pathes(RUN_ASSETS_FOLDER_PATH, "Other")
 OTHER_CLUB_ICO_ICO = connect_pathes(OTHER_FOLDER_PATH, "Club_Ico.ico")
 OTHER_CLUB_LOGO_PNG = connect_pathes(OTHER_FOLDER_PATH, "Club_Logo.png")
 OTHER_TEKNOFEST_LOGO_PNG = connect_pathes(OTHER_FOLDER_PATH, "Teknofest_Logo.png")
+OTHER_TURKISH_LANGUAGE = connect_pathes(OTHER_FOLDER_PATH, "tr.png")
+OTHER_ENGLISH_LANGUAGE = connect_pathes(OTHER_FOLDER_PATH, "en.png")
 
 ANIM_FOLDER_PATH = connect_pathes(RUN_ASSETS_FOLDER_PATH, "Animations")
 ANIM_ANIMATIONS = {file.split("\\")[-1].split(".")[0][len("ANIM_"):]: file for file in [connect_pathes(ANIM_FOLDER_PATH, file) for file in listdir(ANIM_FOLDER_PATH)]}
