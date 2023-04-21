@@ -281,6 +281,8 @@ class NormalAPP(tk.Toplevel) :
 
         all_animation_frames = []
 
+        animation_path = None
+
         for current_animation in self.animation_list :
             
             try :
