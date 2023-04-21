@@ -16,6 +16,8 @@ from Constants.path_track import (
     OTHER_CLUB_ICO_ICO,
     OTHER_CLUB_LOGO_PNG,
     OTHER_TEKNOFEST_LOGO_PNG,
+    OTHER_TURKISH_LANGUAGE,
+    OTHER_ENGLISH_LANGUAGE,
     ANIM_FOLDER_PATH,
     ANIM_ANIMATIONS,
     ANIM_DEFAULT,
@@ -25,4 +27,9 @@ from Constants.path_track import (
     PROGRAM_PRE_EXITS_CHECK_LIST,
     PROGRAM_POST_CLEANUP_CHECK_LIST,
     PROGRAM_POST_CACHE_CHECK_LIST
+)
+
+from Constants.hashes import (
+    ANIM_HASHES,
+    TURKISH_CHARS
 )
