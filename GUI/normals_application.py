@@ -31,7 +31,7 @@ from Utilities import (
 
 class NormalAPP(tk.Toplevel) :
 
-    def __init__(self, available_devices:list, *args, **kwargs) -> None:
+    def __init__(self, available_devices:list, my_Args=None, *args, **kwargs) -> None:
         """
         Constructor method. Creates the main window of the application.
         @Params:

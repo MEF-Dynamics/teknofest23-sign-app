@@ -24,7 +24,7 @@ from Utilities import (
 
 class DisabledAPP(tk.Toplevel) :
 
-    def __init__(self, available_devices:list, model, *args, **kwargs) :
+    def __init__(self, available_devices:list, model, my_Args=None, *args, **kwargs) :
         """
         Constructor method. Creates the main window of the application.
         @Params:

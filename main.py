@@ -5,6 +5,6 @@ if __name__ == "__main__" :
     
     safe_start()
 
-    Application().mainloop()
+    Application(debug=False).mainloop()
 
     safe_stop()

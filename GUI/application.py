@@ -25,7 +25,7 @@ from Utilities import (
 
 class Application(tk.Tk) :
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, debug=False, *args, **kwargs) -> None:
         """
         Constructor method. Creates the main window of the application.
         @Params:
@@ -55,7 +55,8 @@ class Application(tk.Tk) :
 
         style.configure("StartButton.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="#00b300", borderwidth=0, cursor="hand2", relief="flat")
         style.configure("StartButton2.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="red", borderwidth=0, cursor="hand2", relief="flat")
-        
+        style.configure("StartButton3.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="blue", borderwidth=0, cursor="hand2", relief="flat")
+
         self.title("Herkes İçin İşaret Dili")
 
         self.iconbitmap(OTHER_CLUB_ICO_ICO)
@@ -110,6 +111,9 @@ class Application(tk.Tk) :
 
         self.update()
         self.update_idletasks()
+
+        if debug:
+            self.debug_on()
         
     def close(self) -> None:
         """
@@ -125,6 +129,23 @@ class Application(tk.Tk) :
             pass
         self.destroy()
         self.quit()
+
+    def debug_on(self) -> None:
+        """
+        Class Method, that debugs the applications.
+        @Params:
+            None
+        @Returns:
+            None
+        """
+        self.input_button.config(text="DEBUG MODE", cursor="hand2", style="StartButton3.TButton")
+        self.input_button.config(command=self.close_applications)
+
+        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model, {True, "ECMECM", "mkv_mp4", "@544566454"})
+        self.normal_app = NormalAPP(self.available_michrophones, {True, "ECMECM", "aw_mp3", "@544566454"})
+
+        self.normal_app.mainloop()
+        self.disabled_app.mainloop()
 
     def start_applications(self) -> None:
         """
