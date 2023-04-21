@@ -10,10 +10,14 @@ from Constants import (
     GUI_MICROPHONE_B_PNG,
     GUI_MICROPHONE_R_PNG,
     OTHER_CLUB_ICO_ICO,
+    OTHER_TURKISH_LANGUAGE,
+    OTHER_ENGLISH_LANGUAGE,
     ANIM_ANIMATIONS,
     ANIM_DEFAULT,
     ANIM_DEFAULT_LISTENING,
     ANIM_teknofest,
+    ANIM_HASHES,
+    TURKISH_CHARS,
 )
 
 from Utilities import (
@@ -22,9 +26,10 @@ from Utilities import (
 
 from Utilities import (
     listen_text,
+    translate_text,
 )
 
-class NormalAPP(tk.Tk) :
+class NormalAPP(tk.Toplevel) :
 
     def __init__(self, available_devices:list, *args, **kwargs) -> None:
         """
@@ -45,7 +50,7 @@ class NormalAPP(tk.Tk) :
             pass
 
         self.available_devices = available_devices
-
+        
         style = ttk.Style()
 
         style.theme_use("clam")
@@ -56,8 +61,8 @@ class NormalAPP(tk.Tk) :
         #style.configure("StartButton.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="#00b300", borderwidth=0, cursor="hand2", relief="flat")
 
         style.configure("Output.TLabel", font=("Seoge UI", 14, "bold"), borderwidth=0, cursor="hand2", relief="flat")
-        style.configure("SelectedDevice.TLabel", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
-        style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 11, "bold"), borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("SelectedDevice.TLabel", font=("Seoge UI", 13, "bold"), borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("SeelctionCombobox.TCombobox", font=("Seoge UI", 13, "bold"), borderwidth=0, cursor="hand2", relief="flat")
 
         self.title("Herkes İçin İşaret Dili")
 
@@ -103,10 +108,32 @@ class NormalAPP(tk.Tk) :
         self.device_selection_combobox = ttk.Combobox(self.container, textvariable=self.current_device_name, values=list(self.available_devices.values()), state="readonly", justify="center", cursor="hand2", width=50, style="SeelctionCombobox.TCombobox")
         self.device_selection_combobox.grid(row=6, column=0)
 
-        self.device_selection_combobox.bind("<<ComboboxSelected>>", self.handle_device_selection)
+        dummy_label = ttk.Label(self.container, text="")
+        dummy_label.grid(row=7, column=0, pady=5)
 
-        dummy_label3 = ttk.Label(self.container, text="")
-        dummy_label3.grid(row=7, column=0, pady=20)
+        self.available_languages = ["Türkçe", "English"]
+        self.current_language = "Türkçe"
+
+        self.language_selection_label = ttk.Label(self.container, text="Dil Seçimi", justify="center", cursor="star", style="SelectedDevice.TLabel")
+        self.language_selection_label.grid(row=8, column=0)
+
+        self.turkish_flag_image = ImageTk.PhotoImage(Image.open(OTHER_TURKISH_LANGUAGE).resize((50, 50), Image.LANCZOS))
+        self.english_flag_image = ImageTk.PhotoImage(Image.open(OTHER_ENGLISH_LANGUAGE).resize((50, 50), Image.LANCZOS))
+
+        fframe = ttk.Frame(self.container)
+        fframe.grid(row=9, column=0)
+        fframe.columnconfigure((0,1), weight=1)
+
+        self.turkish_flag_button = ttk.Button(fframe, command=lambda: self.handle_language_selection("Türkçe"), cursor="hand2", image=self.turkish_flag_image, state="disabled")
+        self.turkish_flag_button.grid(row=0, column=0)
+
+        self.english_flag_button = ttk.Button(fframe, command=lambda: self.handle_language_selection("English"), cursor="hand2", image=self.english_flag_image)
+        self.english_flag_button.grid(row=0, column=1)
+
+        dummy_label = ttk.Label(self.container, text="")
+        dummy_label.grid(row=11, column=0, pady=20)
+
+        self.device_selection_combobox.bind("<<ComboboxSelected>>", self.handle_device_selection)
 
         self.should_ignore = False
 
@@ -125,6 +152,54 @@ class NormalAPP(tk.Tk) :
 
         self.update()
         self.update_idletasks()
+
+    def close(self) -> None:
+        """
+        Class Method to close the application.
+        @Params
+            None
+        @Returns
+            None
+        """
+        self.destroy()
+
+    def handle_language_selection(self, language: str) -> None:
+        """
+        Class Method to handle language selection.
+        @Params
+            language : (str) Language to be selected.
+        @Returns
+            None
+        """
+
+        if language == "Türkçe" :
+            self.current_language = "Türkçe"
+            self.turkish_flag_button.config(state="disabled")
+            self.english_flag_button.config(state="enabled")
+            self.title("Herkes İçin İşaret Dili")
+            
+            current_output = self.output_text.get()
+            new_output = translate_text(source_language="en", target_language="tr", text=current_output)
+            self.output_text.set(new_output)
+
+            self.device_selection_label.config(text="Mikfrofon Seçimi")
+
+            self.language_selection_label.config(text="Dil Seçimi")
+
+        else :
+            self.current_language = "English"
+            self.turkish_flag_button.config(state="enabled")
+            self.english_flag_button.config(state="disabled")
+            self.title("Sign Language For Everyone")
+
+            current_output = self.output_text.get()
+            new_output = translate_text(source_language="tr", target_language="en", text=current_output)
+            self.output_text.set(new_output)
+
+            self.device_selection_label.config(text="Microphone Selection")
+
+            self.language_selection_label.config(text="Language Selection")
+
 
     def handle_start_listening(self, *args, **kwargs) -> None:
         """
@@ -149,14 +224,24 @@ class NormalAPP(tk.Tk) :
         self.update()
         self.update_idletasks()
 
-        output = listen_text("tr", self.current_device_index.get())
-        output_for_animation = output.lower()
+        map = {"Türkçe" : "tr", "English" : "en"}
 
+        listened = listen_text(map[self.current_language], self.current_device_index.get())
+
+        output = listened
         # if output length is more than 40, just show the first 40 characters with "..." at the end
         if len(output) > 40 :
             output = output[:40] + "..."
-
         self.output_text.set(output)
+
+        revized = listened.lower()
+        if self.current_language == "English" :
+            revized = translate_text(source_language="en", target_language="tr", text=listened).lower()
+
+        for key in TURKISH_CHARS :
+            revized = revized.replace(key, TURKISH_CHARS[key])
+        
+        output_for_animation = revized
 
         self.update()
         self.update_idletasks()
@@ -167,6 +252,13 @@ class NormalAPP(tk.Tk) :
             if self.animation_list[i][-1] in [".", ",", "?", "!", ";"] :
                 self.animation_list[i] = self.animation_list[i][:-1]
 
+        for word in self.animation_list :
+            for key in ANIM_HASHES:
+                if word in ANIM_HASHES[key] :
+                    self.animation_list[self.animation_list.index(word)] = key
+                    break
+
+        print(self.animation_list)
         self.display_animations()
 
         self.animation_label.config(image=self.default_animation_image)
