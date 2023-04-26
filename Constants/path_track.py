@@ -11,7 +11,8 @@ RUN_SOURCES_FOLDER_PATH = connect_pathes(PROJECT_DIRECTORY, "Sources")
 RUN_CONSTANTS_FOLDER_PATH = connect_pathes(PROJECT_DIRECTORY, "Constants")
 RUN_GUI_FOLDER_PATH = connect_pathes(PROJECT_DIRECTORY, "GUI")
 
-AI_MODEL_PATH = connect_pathes(RUN_SOURCES_FOLDER_PATH, "Model", "model.h5")
+AI_MODEL_PATH = connect_pathes(RUN_SOURCES_FOLDER_PATH, "Model", "model2.h5")
+MODEL_WORDS = ["hello", "please"]
 
 GUI_FOLDER_PATH = connect_pathes(RUN_ASSETS_FOLDER_PATH, "GUI")
 GUI_CAMERA_B_PNG = connect_pathes(GUI_FOLDER_PATH, "GUI_Cam_B.png")
