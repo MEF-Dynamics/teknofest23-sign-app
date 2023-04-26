@@ -37,7 +37,7 @@ class Application(tk.Tk) :
         """
         super().__init__(*args, **kwargs)
 
-        self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH)
+        self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH, compile=False)
         self.available_cameras = get_available_cameras()
         self.available_michrophones = get_available_michrophones()
 
