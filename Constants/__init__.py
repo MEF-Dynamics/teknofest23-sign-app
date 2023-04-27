@@ -27,7 +27,9 @@ from Constants.path_track import (
     PROGRAM_PRE_EXITS_CHECK_LIST,
     PROGRAM_POST_CLEANUP_CHECK_LIST,
     PROGRAM_POST_CACHE_CHECK_LIST,
-    MODEL_WORDS
+    MODEL_WORDS,
+    GUI_MODO_PHONE,
+    GUI_MODO_DESKTOP
 )
 
 from Constants.hashes import (

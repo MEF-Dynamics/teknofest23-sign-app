@@ -21,6 +21,8 @@ GUI_MICROPHONE_R_PNG = connect_pathes(GUI_FOLDER_PATH, "GUI_Mic_R.png")
 GUI_MICROPHONE_B_PNG = connect_pathes(GUI_FOLDER_PATH, "GUI_Mic_B.png")
 GUI_NOTFOUND_PNG = connect_pathes(GUI_FOLDER_PATH, "GUI_Not_Found.png")
 GUI_PHONE_PNG = connect_pathes(GUI_FOLDER_PATH, "GUI_Phone.png")
+GUI_MODO_PHONE = connect_pathes(GUI_FOLDER_PATH, "phone.png")
+GUI_MODO_DESKTOP = connect_pathes(GUI_FOLDER_PATH, "desktop.png")
 
 OTHER_FOLDER_PATH = connect_pathes(RUN_ASSETS_FOLDER_PATH, "Other")
 OTHER_CLUB_ICO_ICO = connect_pathes(OTHER_FOLDER_PATH, "Club_Ico.ico")
