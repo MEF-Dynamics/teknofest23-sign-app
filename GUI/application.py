@@ -15,7 +15,9 @@ from Constants import (
     OTHER_TEKNOFEST_LOGO_PNG,
     OTHER_CLUB_LOGO_PNG,
     AI_MODEL_PATH,
-    OTHER_CLUB_ICO_ICO
+    OTHER_CLUB_ICO_ICO,
+    GUI_MODO_PHONE,
+    GUI_MODO_DESKTOP
 )
 
 from Utilities import (
@@ -56,6 +58,7 @@ class Application(tk.Tk) :
         style.configure("StartButton.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="#00b300", borderwidth=0, cursor="hand2", relief="flat")
         style.configure("StartButton2.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="red", borderwidth=0, cursor="hand2", relief="flat")
         style.configure("StartButton3.TButton", font=("Seoge UI", 18, "bold"), foreground="white", background="blue", borderwidth=0, cursor="hand2", relief="flat")
+        style.configure("SelectedDevice.TLabel", font=("Seoge UI", 13, "bold"), borderwidth=0, cursor="hand2", relief="flat")
 
         self.title("Herkes İçin İşaret Dili")
 
@@ -97,15 +100,36 @@ class Application(tk.Tk) :
         self.input_button.grid(row=3, column=0)
 
         dummy_label = ttk.Label(self.container, text="")
-        dummy_label.grid(row=4, column=0, pady=20)
+        dummy_label.grid(row=4, column=0, pady=10)
+
+      
+        self.program_mode = "desktop"
+
+        self.language_selection_label = ttk.Label(self.container, text="Mod Seçimi", justify="center", cursor="star", style="SelectedDevice.TLabel")
+        self.language_selection_label.grid(row=5, column=0)
+
+        self.desktop_image = ImageTk.PhotoImage(Image.open(GUI_MODO_DESKTOP).resize((50, 50), Image.LANCZOS))
+        self.phone_image = ImageTk.PhotoImage(Image.open(GUI_MODO_PHONE).resize((50, 50), Image.LANCZOS))
+
+        fframe = ttk.Frame(self.container)
+        fframe.grid(row=6, column=0)
+        fframe.columnconfigure((0,1), weight=1)
+
+        self.desktop_image_button = ttk.Button(fframe, command=lambda: self.handle_mode_selection("desktop"), cursor="hand2", image=self.desktop_image, state="disabled")
+        self.desktop_image_button.grid(row=0, column=0)
+
+        self.phone_image_button = ttk.Button(fframe, command=lambda: self.handle_mode_selection("phone"), cursor="hand2", image=self.phone_image)
+        self.phone_image_button.grid(row=0, column=1)
+
+        dummy_label = ttk.Label(self.container, text="")
+        dummy_label.grid(row=7, column=0, pady=20)
 
         self.update()
         self.update_idletasks()
         
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        # self.background_label.config(image=self.background_image)
+        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
 
         self.rotateApplicationWindow()
 
@@ -114,6 +138,37 @@ class Application(tk.Tk) :
 
         if debug:
             self.debug_on()
+
+    def handle_mode_selection(self, mode: str) -> None:
+
+        if mode == "desktop" :
+
+            self.program_mode = "desktop"
+
+            self.desktop_image_button.config(state="disabled")
+
+            self.phone_image_button.config(state="normal")
+
+            try :
+                self.background_label.config(image="")
+            except :
+                pass
+        
+        elif mode == "phone" :
+
+            self.program_mode = "phone"
+
+            self.desktop_image_button.config(state="normal")
+
+            self.phone_image_button.config(state="disabled")
+
+            try :
+                self.background_label.config(image=self.background_image)
+            except :
+                pass
+
+        self.update()
+        self.update_idletasks()
         
     def close(self) -> None:
         """
@@ -141,8 +196,8 @@ class Application(tk.Tk) :
         self.input_button.config(text="DEBUG MODE", cursor="hand2", style="StartButton3.TButton")
         self.input_button.config(command=self.close_applications)
 
-        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model, {True, "ECMECM", "mkv_mp4", "@544566454"})
-        self.normal_app = NormalAPP(self.available_michrophones, {True, "ECMECM", "aw_mp3", "@544566454"})
+        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model, self.program_mode, {True, "ECMECM", "mkv_mp4", "@544566454"})
+        self.normal_app = NormalAPP(self.available_michrophones, self.program_mode, {True, "ECMECM", "aw_mp3", "@544566454"})
 
         self.normal_app.mainloop()
         self.disabled_app.mainloop()
@@ -156,11 +211,15 @@ class Application(tk.Tk) :
             None
         """
 
+        self.mode_save = self.program_mode
+        self.desktop_image_button.config(state="disabled")
+        self.phone_image_button.config(state="disabled")
+
         self.input_button.config(text="Uygulamaları Kapat", cursor="hand2", style="StartButton2.TButton")
         self.input_button.config(command=self.close_applications)
 
-        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model)
-        self.normal_app = NormalAPP(self.available_michrophones)
+        self.disabled_app = DisabledAPP(self.available_cameras, self.detector_model, self.program_mode)
+        self.normal_app = NormalAPP(self.available_michrophones, self.program_mode)
 
         self.normal_app.mainloop()
         self.disabled_app.mainloop()
@@ -173,6 +232,14 @@ class Application(tk.Tk) :
         @Returns:
             None
         """
+
+        if self.mode_save == "phone" :
+            self.desktop_image_button.config(state="normal")
+            self.phone_image_button.config(state="disabled")
+        else :
+            self.desktop_image_button.config(state="disabled")
+            self.phone_image_button.config(state="normal")
+
         self.input_button.config(text="Uygulamaları Başlat", cursor="hand2", style="StartButton.TButton")
         self.input_button.config(command=self.start_applications)
 

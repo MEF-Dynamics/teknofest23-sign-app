@@ -25,7 +25,7 @@ from Utilities import (
 
 class DisabledAPP(tk.Toplevel) :
 
-    def __init__(self, available_devices:list, model, my_Args=None, *args, **kwargs) :
+    def __init__(self, available_devices:list, model, mode, my_Args=None, *args, **kwargs) :
         """
         Constructor method. Creates the main window of the application.
         @Params:
@@ -135,8 +135,10 @@ class DisabledAPP(tk.Toplevel) :
 
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        # self.background_label.config(image=self.background_image)
+        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
+        
+        if mode == "phone" :
+            self.background_label.config(image=self.background_image)
 
         self.update()
         self.update_idletasks()

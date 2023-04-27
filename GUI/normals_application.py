@@ -31,7 +31,7 @@ from Utilities import (
 
 class NormalAPP(tk.Toplevel) :
 
-    def __init__(self, available_devices:list, my_Args=None, *args, **kwargs) -> None:
+    def __init__(self, available_devices:list, mode, my_Args=None, *args, **kwargs) -> None:
         """
         Constructor method. Creates the main window of the application.
         @Params:
@@ -142,8 +142,9 @@ class NormalAPP(tk.Toplevel) :
 
         tpl = (self.container.winfo_width(), self.container.winfo_height())
         self.minsize(*tpl)
-        # self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
-        # self.background_label.config(image=self.background_image)
+        self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
+        if mode == "phone" :
+            self.background_label.config(image=self.background_image)
 
         self.update()
         self.update_idletasks()
