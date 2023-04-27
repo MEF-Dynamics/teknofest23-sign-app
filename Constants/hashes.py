@@ -4,7 +4,7 @@ ANIM_HASHES = {
     "gel" : ["gelmek", "geliyorlar", "geliyorsunuz", "gelin", "gelsin", "gelelim", "gelir", "geldi", "geliyor", "geliyorum", "geliyorsun", "geliyoruz"],
     "git" : ["gitmek", "gidiyorlar", "gidiyorsunuz", "gidin", "gitsin", "gidelim", "gider", "gitti", "gidiyor", "gidiyorum", "gidiyorsun", "gidiyoruz"],
     "gunaydin" : ["gunaydinlar"],
-    "iyi misin" : ["iyi misiniz", "iyiler mi", "iyi miyiz", "iyi miyim", "iyi mi"], 
+    "iyi" : ["iyi misiniz", "iyiler mi", "iyi miyiz", "iyi miyim", "iyi mi", "nasilsin"], 
     "kac" : ["kaci", "kaca"],
     "masallah" : ["masallahiniz", "masallahlari", "masallahimiz", "masallahim", "masallahin", "masallahi"],
     "memleket" : ["memlekete", "memleketi", "memleketim", "memleketin", "memleketi", "memleketimiz", "memleketiniz"],
