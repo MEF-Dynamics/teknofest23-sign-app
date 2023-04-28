@@ -13,7 +13,7 @@ def detect() -> str:
         result: str - The result of the detection in english.
     """
 
-    model = tf.keras.models.load_model(AI_MODEL_PATH)
+    model = tf.keras.models.load_model(AI_MODEL_PATH, compile=False)
 
     mp_holistic = mp.solutions.holistic # Holistic model
     mp_drawing = mp.solutions.drawing_utils # Drawing utilities
