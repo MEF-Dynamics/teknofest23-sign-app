@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk
 import tensorflow as tf
 import tkinter as tk
+import ctypes
 
 from GUI import (
     DisabledAPP,
@@ -39,14 +40,22 @@ class Application(tk.Tk) :
         """
         super().__init__(*args, **kwargs)
 
-        self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH, compile=False)
-        self.available_cameras = get_available_cameras()
-        self.available_michrophones = get_available_michrophones()
+        if not debug:
+            self.detector_model = tf.keras.models.load_model(AI_MODEL_PATH, compile=False)
+            self.available_cameras = get_available_cameras()
+            self.available_michrophones = get_available_michrophones()
 
-        try:
-            from ctypes import windll
-            windll.shcore.SetProcessDpiAwareness(1)
-        except:
+        try: # Windows 8.1 and later
+            ctypes.windll.shcore.SetProcessDpiAwareness(2)
+        except Exception as e:
+            pass
+        try: # Ulakbim
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except Exception as e:
+            pass
+        try: # Before Windows 8.1
+            ctypes.windll.user32.SetProcessDPIAware()
+        except: # Windows 8 or before
             pass
 
         style = ttk.Style()
@@ -102,7 +111,6 @@ class Application(tk.Tk) :
         dummy_label = ttk.Label(self.container, text="")
         dummy_label.grid(row=4, column=0, pady=10)
 
-      
         self.program_mode = "desktop"
 
         self.language_selection_label = ttk.Label(self.container, text="Mod Seçimi", justify="center", cursor="star", style="SelectedDevice.TLabel")
@@ -131,13 +139,8 @@ class Application(tk.Tk) :
         self.minsize(*tpl)
         self.background_image = ImageTk.PhotoImage(Image.open(GUI_PHONE_PNG).resize(tpl, Image.LANCZOS))
 
-        self.rotateApplicationWindow()
-
         self.update()
         self.update_idletasks()
-
-        if debug:
-            self.debug_on()
 
     def handle_mode_selection(self, mode: str) -> None:
 
@@ -248,15 +251,3 @@ class Application(tk.Tk) :
             self.disabled_app.close()
         except :
             pass
-
-
-    def rotateApplicationWindow(self) -> None:
-        """
-        Class Method, that rotates the application window.
-        @Params:
-            None
-        @Returns:
-            None
-        """
-        self.update()
-        self.geometry("+{}+{}".format(int(self.winfo_screenwidth()/2 - self.winfo_reqwidth()/2), int(self.winfo_screenheight()/2 - self.winfo_reqheight()/2)))

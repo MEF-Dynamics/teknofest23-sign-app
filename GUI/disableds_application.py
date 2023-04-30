@@ -40,6 +40,8 @@ class DisabledAPP(tk.Toplevel) :
         self.available_devices = available_devices
         self.model = model
 
+        self.show_land_marks = False
+
         self.state = "start"
 
         style = ttk.Style()
@@ -84,8 +86,9 @@ class DisabledAPP(tk.Toplevel) :
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame = cv2.flip(frame, 1)
         self.captured_image = ImageTk.PhotoImage(Image.fromarray(frame).resize((500, 500), Image.LANCZOS))
-        self.camera_view_label = ttk.Label(self.container, image=self.captured_image, justify="center", cursor="star", anchor="center", borderwidth=5, border=1)
+        self.camera_view_label = ttk.Label(self.container, image=self.captured_image, justify="center", cursor="hand2", anchor="center", borderwidth=5, border=1)
         self.camera_view_label.grid(row=1, column=0, padx=45)
+        self.camera_view_label.bind("<Button-1>", self.landmark_switch)
 
         self.output_label = ttk.Label(self.container, textvariable=self.output_text, justify="center", cursor="star", style="Output.TLabel")
         self.output_label.grid(row=2, column=0, pady=40)
@@ -142,6 +145,8 @@ class DisabledAPP(tk.Toplevel) :
 
         self.update()
         self.update_idletasks()
+
+    def landmark_switch(self, *event) : self.show_land_marks = not self.show_land_marks
 
     def close(self) -> None:
         """
@@ -272,22 +277,6 @@ class DisabledAPP(tk.Toplevel) :
             self.update()
             self.update_idletasks()
 
-            self.rotateApplicationWindow()
-
-            self.update()
-            self.update_idletasks()
-
-    def rotateApplicationWindow(self) -> None:
-        """
-        Class Method, that rotates application window
-        @Params
-            None
-        @Returns
-            None
-        """
-        self.update()
-        self.geometry("+{}+{}".format(int(self.winfo_screenwidth()/2 - self.winfo_reqwidth()/2), int(self.winfo_screenheight()/2 - self.winfo_reqheight()/2)))
-
     def handle_device_selection(self, *event) -> None:
         """
         Class Method, that handles device selection
@@ -330,10 +319,12 @@ class DisabledAPP(tk.Toplevel) :
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 
             if results.right_hand_landmarks or results.left_hand_landmarks :
-                #self.mp_drawing.draw_landmarks(image, results.face_landmarks, self.mp_holistic.FACEMESH_TESSELATION, self.mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1), self.mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1))
-                #self.mp_drawing.draw_landmarks(image, results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS,self.mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2))
-                #self.mp_drawing.draw_landmarks(image, results.left_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS, self.mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2))
-                #self.mp_drawing.draw_landmarks(image, results.right_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS, self.mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
+
+                if self.show_land_marks :
+                    self.mp_drawing.draw_landmarks(image, results.face_landmarks, self.mp_holistic.FACEMESH_TESSELATION, self.mp_drawing.DrawingSpec(color=(80,110,10), thickness=1, circle_radius=1), self.mp_drawing.DrawingSpec(color=(80,256,121), thickness=1, circle_radius=1))
+                    self.mp_drawing.draw_landmarks(image, results.pose_landmarks, self.mp_holistic.POSE_CONNECTIONS,self.mp_drawing.DrawingSpec(color=(80,22,10), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(80,44,121), thickness=2, circle_radius=2))
+                    self.mp_drawing.draw_landmarks(image, results.left_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS, self.mp_drawing.DrawingSpec(color=(121,22,76), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(121,44,250), thickness=2, circle_radius=2))
+                    self.mp_drawing.draw_landmarks(image, results.right_hand_landmarks, self.mp_holistic.HAND_CONNECTIONS, self.mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=4), self.mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2))
 
                 keypoints = np.concatenate(
                     [

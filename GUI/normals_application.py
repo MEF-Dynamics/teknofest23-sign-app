@@ -149,11 +149,6 @@ class NormalAPP(tk.Toplevel) :
         self.update()
         self.update_idletasks()
 
-        self.rotateApplicationWindow()
-
-        self.update()
-        self.update_idletasks()
-
     def close(self) -> None:
         """
         Class Method to close the application.
@@ -322,14 +317,3 @@ class NormalAPP(tk.Toplevel) :
         """
         self.current_device_name.set(self.device_selection_combobox.get())
         self.current_device_index.set(list(self.available_devices.values()).index(self.current_device_name.get()))
-
-    def rotateApplicationWindow(self) -> None:
-        """
-        Class Method to rotate the application window.
-        @Params
-            None
-        @Returns
-            None
-        """
-        self.update()
-        self.geometry("+{}+{}".format(int(self.winfo_screenwidth()/2 - self.winfo_reqwidth()/2), int(self.winfo_screenheight()/2 - self.winfo_reqheight()/2)))
